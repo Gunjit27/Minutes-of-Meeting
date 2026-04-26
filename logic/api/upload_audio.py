@@ -16,25 +16,19 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 @router.post("/upload_audio")
 async def upload_audio(file: UploadFile = File(...)):
     try:
-        # ✅ Validate file type
         if not file.filename.endswith((".mp3", ".wav", ".m4a")):
             raise HTTPException(status_code=400, detail="Unsupported file format")
 
-        # ✅ Unique filename to avoid collisions
         file_id = f"{uuid.uuid4()}_{file.filename}"
         file_path = os.path.join(UPLOAD_DIR, file_id)
 
-        # ✅ Save file
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-        # ✅ Transcribe
         raw_transcript = transcribe_audio(file_path)
 
-        # ✅ Clean transcript
         cleaned_transcript = clean_transcript(raw_transcript)
 
-        # ✅ Optional: delete file after processing
         os.remove(file_path)
         embed_chunks()
         return {
