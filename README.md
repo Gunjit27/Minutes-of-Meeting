@@ -1,45 +1,63 @@
 # 🧠 Meeting Intelligence System
 
-An end-to-end AI-powered system that transforms meeting audio into actionable insights — including transcripts, Q&A, summaries, and presentation-ready outputs.
+An end-to-end AI-powered system that converts meeting audio into actionable insights — including transcripts, Q&A, structured minutes (MoM), and presentation-ready slides.
 
 ---
 
-## 🚀 Features
+## 🚀 Overview
+
+This project is designed to automate the entire meeting workflow:
+
+* Convert raw audio → structured knowledge
+* Enable querying meeting content using LLMs
+* Generate summaries and action items
+* Export outputs into usable formats (MoM, PPT)
+
+Unlike basic transcription tools, this system builds a **retrieval-based intelligence layer on top of meeting data**.
+
+---
+
+## ✨ Features
 
 * 🎧 **Audio Transcription**
 
-  * Converts meeting recordings into text using Whisper
+  * Uses Whisper to convert speech → text
 
-* ❓ **Ask Questions (RAG-based)**
+* 🧠 **RAG-based Q&A**
 
-  * Query your meeting content using LLM-powered retrieval
+  * Ask questions about meeting content
+  * Context-aware answers using vector search
 
 * 📝 **Minutes of Meeting (MoM)**
 
-  * Automatically generates structured meeting summaries
+  * Automatically extracts:
+
+    * Key discussion points
+    * Decisions
+    * Action items
 
 * 📊 **PPT Generation**
 
-  * Converts meeting insights into presentation slides
+  * Converts insights into presentation-ready slides
 
-* 🔊 **Text-to-Speech (optional)**
+* 🔊 **Text-to-Speech (Optional)**
 
-  * Listen to generated answers
+  * Converts answers into audio responses
 
 ---
 
 ## 🏗️ Architecture
 
-```
+```text
 Audio Input
    ↓
 Whisper Transcription
    ↓
-Text Cleaning
+Text Processing
    ↓
 Chunking + Embeddings
    ↓
-Vector Store (RAG)
+Vector Store (ChromaDB)
    ↓
 LLM (Ollama)
    ↓
@@ -55,23 +73,24 @@ Outputs:
 
 * **Frontend:** Streamlit
 * **Backend:** FastAPI
-* **LLM:** Ollama (LLaMA 3)
 * **Speech-to-Text:** Whisper
-* **Vector DB:** ChromaDB
+* **LLM:** Ollama (LLaMA 3)
+* **Vector Store:** ChromaDB
 * **TTS:** Edge-TTS
+* **Dependency Management:** uv (pyproject.toml)
 
 ---
 
 ## 📂 Project Structure
 
-```
+```text
 .
 ├── app.py                # Streamlit frontend
-├── main.py              # FastAPI entrypoint
+├── main.py              # FastAPI backend
 ├── state.py             # Shared state
 
 ├── logic/
-│   ├── api/             # API routes
+│   ├── api/             # API endpoints
 │   ├── transcription/   # Audio → text
 │   ├── rag/             # Retrieval + Q&A
 │   ├── mom/             # MoM generation
@@ -82,27 +101,33 @@ Outputs:
 
 ## ⚙️ Setup Instructions
 
-### 1. Clone the repo
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/Gunjit27/Minutes-of-Meeting.git
 cd Minutes-of-Meeting
 ```
 
+---
 
-### 2. Install dependencies
+### 2. Install dependencies (Recommended: uv)
 
 ```bash
-pip install -r requirements.txt
+pip install uv
+uv sync
 ```
 
-### 3. Run backend
+---
+
+### 3. Run Backend
 
 ```bash
 uvicorn main:app --reload
 ```
 
-### 4. Run frontend
+---
+
+### 4. Run Frontend
 
 ```bash
 streamlit run app.py
@@ -110,21 +135,27 @@ streamlit run app.py
 
 ---
 
-## 🧪 Example Workflow
+## 🧪 How It Works
 
 1. Upload meeting audio
-2. Generate transcript
-3. Ask questions about the meeting
-4. Generate MoM
-5. Export PPT
+2. Transcribe audio using Whisper
+3. Store embeddings in vector database
+4. Query using RAG pipeline
+5. Generate:
+
+   * Answers
+   * Meeting summary (MoM)
+   * PPT slides
 
 ---
 
 ## 💡 Use Cases
 
 * Team meetings
-* Client calls
+* Client discussions
 * Interview analysis
 * Lecture summarization
+* Knowledge extraction from recordings
 
 ---
+
