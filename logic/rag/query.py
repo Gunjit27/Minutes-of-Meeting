@@ -1,10 +1,5 @@
-# services/qa.py
-
 import state
 from langchain_ollama import ChatOllama
-
-
-# ---------------- LLM ---------------- #
 
 llm = ChatOllama(
     model='llama3.1:8b',
@@ -23,8 +18,6 @@ Question:
 {query}
 """
 
-
-# ---------------- VECTORSTORE ---------------- #
 
 def load_vectorstore():
     vectorstore = state.get_vectorstore()
@@ -51,7 +44,6 @@ def query_vectorstore(query: str):
     return context
 
 
-# ---------------- MAIN FUNCTION ---------------- #
 
 def generate_answer(query: str):
     context = query_vectorstore(query)
