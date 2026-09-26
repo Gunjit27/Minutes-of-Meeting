@@ -3,13 +3,16 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from logic.rag.retrieval import build_index
 
+# Shared with evals/run.py, so the eval chunks transcripts exactly like the app.
+SPLITTER = RecursiveCharacterTextSplitter(
+    chunk_size=800,
+    chunk_overlap=200,
+    add_start_index=True,
+)
+
 
 def chunk_transcript(transcript: str):
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=800,
-        chunk_overlap=200, 
-    )
-    texts = text_splitter.split_text(transcript)
+    texts = SPLITTER.split_text(transcript)
     return texts
 
 

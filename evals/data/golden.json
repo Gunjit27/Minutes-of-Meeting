@@ -1,0 +1,382 @@
+[
+ {
+  "id": "ES2004a-0",
+  "meeting": "ES2004a",
+  "question": "Why did the group decide to incorporate a menu display when discussing remote control style and design optimization?",
+  "expected_answer": "Marketing believed that most of the market would want convenient channel browsing and volume adjustment features instead of any tampering or programming with too many buttons. User Interface agreed with the simplification of symbols. The team came up with a menu display to make the remote more user-friendly.",
+  "gold_spans": [
+   [
+    10773,
+    13207
+   ],
+   [
+    14059,
+    14402
+   ]
+  ]
+ },
+ {
+  "id": "ES2004a-1",
+  "meeting": "ES2004a",
+  "question": "What did Industrial Designer think of the older generation when discussing remote control style and design optimization?",
+  "expected_answer": "Industrial Designer initially worried about the replacement of buttons. Industrial Designer was soon convinced by Marketing that the age gap was a problem regardless of any design modifications and insisted on the incorporation of a menu display, however.",
+  "gold_spans": [
+   [
+    13208,
+    14355
+   ]
+  ]
+ },
+ {
+  "id": "ES2004a-2",
+  "meeting": "ES2004a",
+  "question": "What did Industrial Designer think of plastic when discussing remote control style and design optimization?",
+  "expected_answer": "Industrial Designer was uncertain about whether the remote could look fashionable with plastic at first. Marketing and Project Manager exemplified other remote controls to make Industrial Designer believe that silver plastic could look smart.",
+  "gold_spans": [
+   [
+    16701,
+    18747
+   ]
+  ]
+ },
+ {
+  "id": "ES2004b-0",
+  "meeting": "ES2004b",
+  "question": "What did Industrial Designer think of triple A batteries when discussing battery issues and flip top design?",
+  "expected_answer": "Industrial Designer admitted that current remote controls were mostly powered by triple A batteries. However, Industrial Designer also pointed out that they were bulky, although they had been the smallest fit-in batteries at present. Industrial Designer expressed a desire to find a smaller alternative for triple A batteries.",
+  "gold_spans": [
+   [
+    2939,
+    5465
+   ]
+  ]
+ },
+ {
+  "id": "ES2004b-1",
+  "meeting": "ES2004b",
+  "question": "Why did Industrial Designer think of incorporating an alarm when discussing market research and adjustments due to new project requirements?",
+  "expected_answer": "The market research implicated that users' biggest frustration was their failure in finding the remote control once it was lost in the house. To solve the problem, Industrial Designer suggested that a button could be added on the TV; when the user pressed the button, the remote control would beep to let the user know its location. Meanwhile, such a solution would be within budget.",
+  "gold_spans": [
+   [
+    13328,
+    15159
+   ],
+   [
+    18582,
+    19751
+   ]
+  ]
+ },
+ {
+  "id": "ES2004b-2",
+  "meeting": "ES2004b",
+  "question": "Why did Industrial Designer think of physically different designs when discussing market research and adjustments due to new project requirements?",
+  "expected_answer": "Industrial Designer was inspired by the design of Xbox and gave an example of Japanese people's small hands compared to the big controller. Out of ergonomic considerations, Industrial Designer encouraged the team to notice the physical differences among users all over the world when deciding the remote control size.",
+  "gold_spans": [
+   [
+    22673,
+    24360
+   ]
+  ]
+ },
+ {
+  "id": "ES2004c-0",
+  "meeting": "ES2004c",
+  "question": "What did the team decide on in the last meeting?",
+  "expected_answer": "Teletext will not be used and there will not be a control for everything. The buttons should be easy to find. The image of the company is to be incorporated in the design and a flip design is decided. Voice recognition is left out. The shape of the remote will be different than normal, like a shell or something along those lines. An alarm will be added in case the remote is lost. The target market will be young business people.",
+  "gold_spans": [
+   [
+    857,
+    1789
+   ]
+  ]
+ },
+ {
+  "id": "ES2004c-1",
+  "meeting": "ES2004c",
+  "question": "Summarize the discussion about the feedback on the design of the remote control device.",
+  "expected_answer": "Market research was done with a hundred subjects and Marketing concluded the most important aspect required in the device is a fancy look and feel. The second and third important aspects are technologically innovative and being easy to use. Fruits and vegetables can be taken into consideration when thinking about design themes as they were the themes of fashion fairs in Paris and Milan. There is also a trend towards a spongy feel to materials.",
+  "gold_spans": [
+   [
+    2000,
+    4358
+   ]
+  ]
+ },
+ {
+  "id": "ES2004c-2",
+  "meeting": "ES2004c",
+  "question": "What are the actual components found in most remote controls that will be included in this remote design?",
+  "expected_answer": "Industrial Designer explained that TA11835 is a chip used in pretty much every remote control to send out standard signals based on the input. On the other hand, most current remotes use a silicone printed circuit board (PCB board) which connects the circuits so that the messages would be sent to the chip. The size should be decided as the board can be custom made.",
+  "gold_spans": [
+   [
+    5642,
+    5968
+   ],
+   [
+    15352,
+    16767
+   ]
+  ]
+ },
+ {
+  "id": "ES2004d-0",
+  "meeting": "ES2004d",
+  "question": "What did Marketing think of the incorporation of current fashion trends in the prototype when making a simulation market evaluation of the new remote control?",
+  "expected_answer": "Marketing initially doubted that Industrial Designer was limited in the use of materials for the prototype, which would harm the fashion style. Marketing was soon convinced by Industrial Designer, however, that the changeable faces would allow users to customize their remote controls. Besides, the rubber case would give a spongy feel. Marketing thus rated one point for Industrial Designer's style design.",
+  "gold_spans": [
+   [
+    14187,
+    15658
+   ]
+  ]
+ },
+ {
+  "id": "ES2004d-1",
+  "meeting": "ES2004d",
+  "question": "What's the conclusion of the minimization of repetitive strain injury when making simulation market evaluation of the new remote control?",
+  "expected_answer": "Marketing considered the design of pointers unfeasible, for many users were prone to zap. Project Manager recommended the slight and small-sized buttons with more space in between. Regretfully, the team failed to come up with a perfectly feasible solution to the problem. The team thus gave low rate points to the prototype's minimization of repetitive strain injury.",
+  "gold_spans": [
+   [
+    15898,
+    17533
+   ]
+  ]
+ },
+ {
+  "id": "ES2004d-2",
+  "meeting": "ES2004d",
+  "question": "What did User Interface think of the replacement of the kinetic batteries when discussing cost calculation and budget issues?",
+  "expected_answer": "User Interface recommended the standard batteries to replace the kinetic batteries and lower the cost. Marketing was promised by User Interface that the change in battery type would not make any big difference in shape and colours. However, Marketing was still uncertain about the replacement. User Interface further explained that users were used to paying little attention to batteries which were installed internally.",
+  "gold_spans": [
+   [
+    25281,
+    26349
+   ],
+   [
+    26962,
+    27598
+   ]
+  ]
+ },
+ {
+  "id": "ES2011a-0",
+  "meeting": "ES2011a",
+  "question": "What did Project Manager think of the call button suggested by User Interface?",
+  "expected_answer": "The initial feature suggested by Marketing was easy to find and User Interface suggested a call button on the television. And Marketing wanted something that could vibrate or had a signal if it had no sound. However, they were not sure whether it is expensive to design it. So Project Manager suggested designing a magnet or portable phone based couch for the remote control, which people no need to walk over the TV to find it.",
+  "gold_spans": [
+   [
+    6631,
+    8948
+   ]
+  ]
+ },
+ {
+  "id": "ES2011a-1",
+  "meeting": "ES2011a",
+  "question": "Summarize the discussion about the remote control size.",
+  "expected_answer": "Project Manager asked if the remote control needed to be made larger to avoid losing it. At the first beginning, User Interface suggested bigger, while Project Manager suggested a hand-sized device. Considering the light feature and putting noise on it, User Interface thought it would be feasible to make it mobile with a target price at 25 Euros.",
+  "gold_spans": [
+   [
+    8949,
+    10242
+   ]
+  ]
+ },
+ {
+  "id": "ES2011a-2",
+  "meeting": "ES2011a",
+  "question": "What did Project Manager think of the cost constraints on the telly screen with the programming function?",
+  "expected_answer": "Since User Interface initially suggested less button feature on the remote control, so Project Manager suggested a telly screen like what phones have. And User Interface mentioned about the master control in electronic houses. However, User Interface thought it is a bit expensive to create this feature, but Marketing mentioned the similar screen in phones is in the acceptable cost range. So, Project Manager agreed and suggested further discussion in the coming meeting.",
+  "gold_spans": [
+   [
+    10439,
+    13587
+   ]
+  ]
+ },
+ {
+  "id": "ES2011b-0",
+  "meeting": "ES2011b",
+  "question": "What did the group discuss the functional design on the remote control?",
+  "expected_answer": "Project Manager stated the meeting topic on function design. Firstly, Marketing concluded a study on user needs, including buttons for channel selection according to the frequency of use and the relevance of each button, and suggested targeting on the nineteen to thirty-five years old age group to design functions. Next, User Interface presented on the technical effect on what functions users need and how to make the best functions for users. Then, Industrial Designer presented the working design, including input a channel or volume setting and output the location function to the television.",
+  "gold_spans": [
+   [
+    18,
+    5180
+   ]
+  ]
+ },
+ {
+  "id": "ES2011b-1",
+  "meeting": "ES2011b",
+  "question": "What did group members think of the speech recognition design suggested by Marketing?",
+  "expected_answer": "Marketing suggested the speech recognition design is for user groups aged from nineteen to thirty-five. Industrial Designer supplemented the feature design that if the TV is on and somebody says like one, then the TV would switch itself to channel one. However, Project Manager illustrated that considering the budget, to have the speech recognition programmed in every single remote might be expensive. And this ended up was commonly agreed by other group mates.",
+  "gold_spans": [
+   [
+    11259,
+    12690
+   ]
+  ]
+ },
+ {
+  "id": "ES2011b-2",
+  "meeting": "ES2011b",
+  "question": "Summarize the discussion about the VCR / VHR / DVD capability button.",
+  "expected_answer": "Project Manager mentioned that the group needed to decide on the VCR capabilities and answered Industrial Designer's question on whether VCRs were the same across the world. So Industrial Designer suggested a whole different set of buttons for individual VCRs. Project Manager suggested DVD type if considering the target group as young professionals and teenagers.",
+  "gold_spans": [
+   [
+    16080,
+    17987
+   ]
+  ]
+ },
+ {
+  "id": "ES2011c-0",
+  "meeting": "ES2011c",
+  "question": "What did the Industrial Designer say about component design?",
+  "expected_answer": "Industrial Designer thought some parts needed custom design, and other parts should just use standard. For example, the case needed custom design to protect the remote and the locator, and the circuit board needed custom design as well, while the buttons and the wheels, radio sender and receiver were all standard parts. In addition, beeper or other noise things were needed as well for locating the remote. Rubber, plastic, wood and titanium were options of materials, but better not titanium. Regular chips were required if the iPod-style wheel button was used.",
+  "gold_spans": [
+   [
+    678,
+    2777
+   ]
+  ]
+ },
+ {
+  "id": "ES2011c-1",
+  "meeting": "ES2011c",
+  "question": "Summarize the discussion about potential options of energy.",
+  "expected_answer": "Battery, solar power, dynamo, Kryptonite were potential options of the energy. They ended up with a preference on Kryptonite. Even though they could not find an exact price for it, it would not be more expensive than a chip.",
+  "gold_spans": [
+   [
+    28611,
+    30666
+   ]
+  ]
+ },
+ {
+  "id": "ES2011c-2",
+  "meeting": "ES2011c",
+  "question": "What did the Industrial Designer think of the potential options of energy?",
+  "expected_answer": "Industrial Designer preferred battery. Industrial Designer was not very familiar with dynamo. Wind-up or a dynamo or a solar power were all possible, but solar power would not be available with the rubber case.",
+  "gold_spans": [
+   [
+    28754,
+    29618
+   ]
+  ]
+ },
+ {
+  "id": "ES2011d-0",
+  "meeting": "ES2011d",
+  "question": "What did the group think of the leadership in the process of the project?",
+  "expected_answer": "Project Manager thought his leadership was crap personally and he never did a management position. While Industrial Designer thought Project Manager did tell them when to start and when to end, which was important in good leadership. And User Interface thought Project Manager did a good job in leadership because they didn't have set roles so much, which was a democratic process. Marketing supplemented that everyone got blended quite well.",
+  "gold_spans": [
+   [
+    22115,
+    23165
+   ]
+  ]
+ },
+ {
+  "id": "ES2011d-1",
+  "meeting": "ES2011d",
+  "question": "What did the group think of the convenience of presentation materials?",
+  "expected_answer": "Both User Interface and Industrial Designer thought it was not helpful to use PowerPoint to present. Instead, they preferred writing notes for massive information, while Marketing and Project Manager thought PowerPoint materials were quite useful. Specifically, Project Manager mentioned that he felt ignorant when the group was explaining things.",
+  "gold_spans": [
+   [
+    23166,
+    25836
+   ]
+  ]
+ },
+ {
+  "id": "IS1003a-0",
+  "meeting": "IS1003a",
+  "question": "Summarize the discussion about the product features.",
+  "expected_answer": "The remote control had to be original, trendy, easy to use, international and not too expensive.",
+  "gold_spans": [
+   [
+    166,
+    840
+   ],
+   [
+    1710,
+    2407
+   ],
+   [
+    6048,
+    7398
+   ]
+  ]
+ },
+ {
+  "id": "IS1003a-1",
+  "meeting": "IS1003a",
+  "question": "Why did Project Manager propose that the product should be international when discussing the product features?",
+  "expected_answer": "Because it would be sold in the entire world and everyone would use it.",
+  "gold_spans": [
+   [
+    1710,
+    2116
+   ],
+   [
+    6048,
+    6592
+   ]
+  ]
+ },
+ {
+  "id": "IS1003a-2",
+  "meeting": "IS1003a",
+  "question": "Summarize the conclusion of the discussion about the product price and cost as a part of the product features.",
+  "expected_answer": "The remote control would be priced at 25 Euros and the product cost would be no more than 12.5 Euros.",
+  "gold_spans": [
+   [
+    1345,
+    1685
+   ],
+   [
+    6593,
+    7036
+   ]
+  ]
+ },
+ {
+  "id": "IS1003b-0",
+  "meeting": "IS1003b",
+  "question": "What did the user interface designer and the industrial designer recommend to do when discussing the product requirement and why?",
+  "expected_answer": "The user interface designer recommended to design a Google TV controller because Google was very successful for its powerful functions and friendly user interface. Also, to make the customers able to use the product without learning the manual, the industrial designer suggested applying some international standards such as some pictograms.",
+  "gold_spans": [
+   [
+    2104,
+    4592
+   ]
+  ]
+ },
+ {
+  "id": "IS1003b-1",
+  "meeting": "IS1003b",
+  "question": "Summarize the discussion about the Internet connection.",
+  "expected_answer": "The industrial designer expressed concern about how to connect TV to the Internet and the user interface designer said a set box would enable TV to surf the Internet. However, the technology was not very popular, which might be an obstacle for global usage of the product.",
+  "gold_spans": [
+   [
+    22792,
+    23980
+   ]
+  ]
+ },
+ {
+  "id": "IS1003b-2",
+  "meeting": "IS1003b",
+  "question": "Why did the project manager disagree with the industrial designer when talking about whether to have a wireless control?",
+  "expected_answer": "Firstly, the industrial designer said the wireless technology would cost 8 Euros which was higher than the manager's expectation. Secondly, whether the users would like to have a wireless control or not was unknown and the marketing would go to figure it out. Finally, having a link between the remote control and the television would prevent control from losing.",
+  "gold_spans": [
+   [
+    8614,
+    11843
+   ]
+  ]
+ }
+]

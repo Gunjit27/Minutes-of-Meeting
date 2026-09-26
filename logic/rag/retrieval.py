@@ -11,6 +11,7 @@ what BM25 catches. The cross-encoder then reads query and chunk together,
 which is more accurate than comparing two independently made vectors.
 """
 import os
+import re
 import uuid
 from dataclasses import dataclass
 from functools import lru_cache
@@ -30,6 +31,11 @@ CANDIDATES = 10  # per retriever, before fusion
 RRF_K = 60  # standard reciprocal rank fusion constant
 
 
+def _bm25_tokens(text: str) -> list[str]:
+    # BM25Retriever's default is str.split(), so "Remote" and "remote," never match.
+    return re.findall(r"[a-z0-9]+", text.lower())
+
+
 @dataclass
 class MeetingIndex:
     vectorstore: Chroma
@@ -47,7 +53,7 @@ def build_index(chunks: list[str], embeddings=None) -> MeetingIndex:
     )
     vectorstore.add_documents(docs)
 
-    bm25 = BM25Retriever.from_documents(docs, k=CANDIDATES)
+    bm25 = BM25Retriever.from_documents(docs, k=CANDIDATES, preprocess_func=_bm25_tokens)
     return MeetingIndex(vectorstore=vectorstore, bm25=bm25)
 
 

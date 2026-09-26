@@ -167,17 +167,19 @@ streamlit run app.py
 
 ## 📏 Evaluation
 
-The RAG pipeline is evaluated on a fixed transcript of a sample earnings call (`evals/data/`), with a hand-checked question set in `evals/data/golden.json`. Every question is run through each retrieval mode, answered with the app's own prompt and LLM, and scored:
+The RAG pipeline is evaluated on **29 questions over 10 real meetings** from [QMSum](https://github.com/Yale-LILY/QMSum) (AMI product-design meetings, 10k to 40k characters each). QMSum's questions and answers are written by people, and each answer is tied to the transcript turns that support it, so retrieval can be scored without an LLM. `evals/build_qmsum.py` builds `evals/data/` from the QMSum repo.
 
-* **Retrieval, no LLM:** hit@3 and MRR. Each question carries a verbatim evidence quote, and a hit means a top-3 chunk contains it.
-* **DeepEval, with a Llama 3.3 70B judge:** faithfulness, answer relevancy, contextual precision, contextual recall, contextual relevancy.
+Each question is run through all three retrieval modes, answered with the app's own prompt and LLM, and scored:
+
+* **Retrieval, no LLM:** hit@3 (a top-3 chunk overlaps the evidence), MRR, and evidence recall (the share of the evidence the top 3 chunks cover)
+* **DeepEval, with an LLM judge (Llama 3.3 70B on Groq by default):** faithfulness, answer relevancy, contextual relevancy. Add `--metrics all` for contextual precision and recall.
 
 ```bash
-uv run python -m evals.transcribe EarningsCall.wav   # once, writes evals/data/
-uv run python -m evals.run                           # all modes; --limit 5 for a quick run
+uv run python -m evals.run --no-judge   # retrieval metrics only, no API calls
+uv run python -m evals.run              # plus DeepEval, for the vector and hybrid_rerank modes
 ```
 
-Results are written to `evals/results/`: per-question rows with judge reasons in `<mode>.jsonl`, and the table below in `summary.md`. The run resumes where it stopped if Groq's free-tier limit cuts it off.
+Results go to `evals/results/`: per-question rows with judge reasons in `<mode>.jsonl`, and the table below in `summary.md`. If the run hits a rate limit, it resumes where it stopped. `--judge gemini:gemini-2.5-flash` or `--judge ollama:llama3.1:8b` switches the judge.
 
 ### Results
 
