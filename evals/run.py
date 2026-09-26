@@ -104,13 +104,13 @@ def run_mode(mode: str, cases: list[dict], chunks: list[str], judge) -> list[dic
     out = RESULTS_DIR / f"{mode}.jsonl"
     done = {}
     if out.exists():
-        done = {r["id"]: r for r in map(json.loads, out.read_text().splitlines())}
+        done = {r["id"]: r for r in map(json.loads, out.read_text(encoding="utf-8").splitlines())}
 
     todo = [c for c in cases if c["id"] not in done]
     print(f"\n[{mode}] {len(done)} cached, {len(todo)} to run")
     if todo:
         index = build_index(chunks)
-        with out.open("a") as f:
+        with out.open("a", encoding="utf-8") as f:
             for i, case in enumerate(todo, 1):
                 row = score_case(case, index, mode, judge)
                 done[row["id"]] = row
@@ -146,8 +146,8 @@ def write_summary(summaries: dict, judge_name: str) -> str:
         f"answer LLM: {llm_config.LLM_PROVIDER} · embeddings: {llm_config.EMBED_PROVIDER} · "
         f"judge: {judge_name}"
     )
-    (RESULTS_DIR / "summary.md").write_text(f"{table}\n\n{config}\n")
-    (RESULTS_DIR / "summary.json").write_text(json.dumps({"config": config, "modes": summaries}, indent=2))
+    (RESULTS_DIR / "summary.md").write_text(f"{table}\n\n{config}\n", encoding="utf-8")
+    (RESULTS_DIR / "summary.json").write_text(json.dumps({"config": config, "modes": summaries}, indent=2), encoding="utf-8")
     return f"{table}\n\n{config}"
 
 
@@ -158,8 +158,8 @@ def main() -> None:
     parser.add_argument("--judge-model", default=DEFAULT_JUDGE)
     args = parser.parse_args()
 
-    transcript = (DATA_DIR / "earnings_call_transcript.txt").read_text()
-    cases = json.loads((DATA_DIR / "golden.json").read_text())[: args.limit]
+    transcript = (DATA_DIR / "earnings_call_transcript.txt").read_text(encoding="utf-8")
+    cases = json.loads((DATA_DIR / "golden.json").read_text(encoding="utf-8"))[: args.limit]
     chunks = chunk_transcript(transcript)
     judge = GroqJudge(args.judge_model)
 

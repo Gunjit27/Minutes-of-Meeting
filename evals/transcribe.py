@@ -17,8 +17,8 @@ def main(audio_path: str) -> None:
     segs = [{"start": round(s.start, 2), "end": round(s.end, 2), "text": s.text.strip()} for s in segments]
 
     OUT_DIR.mkdir(exist_ok=True)
-    (OUT_DIR / "earnings_call_segments.json").write_text(json.dumps(segs, indent=1))
-    (OUT_DIR / "earnings_call_transcript.txt").write_text(" ".join(s["text"] for s in segs))
+    (OUT_DIR / "earnings_call_segments.json").write_text(json.dumps(segs, indent=1), encoding="utf-8")
+    (OUT_DIR / "earnings_call_transcript.txt").write_text(" ".join(s["text"] for s in segs), encoding="utf-8")
     print(f"{len(segs)} segments, {segs[-1]['end'] / 60:.1f} min")
 
 
