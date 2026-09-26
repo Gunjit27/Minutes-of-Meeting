@@ -128,6 +128,14 @@ def judge_case(row: dict, case: dict, metrics: list[str], judge) -> None:
         expected_output=case["expected_answer"],
         retrieval_context=row["retrieved"],
     )
+    # Scores from a different judge aren't comparable, so switching judges re-scores the row.
+    judge_name = judge.get_model_name()
+    if row.get("judge") != judge_name:
+        for name in ALL_METRICS:
+            row.pop(name, None)
+            row.pop(f"{name}_reason", None)
+        row["judge"] = judge_name
+
     for name in metrics:
         if row.get(name) is not None:
             continue
