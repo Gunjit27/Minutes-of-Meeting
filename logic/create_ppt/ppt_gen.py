@@ -1,7 +1,7 @@
 import json
 import re
 from typing import List
-from langchain_ollama import ChatOllama
+from logic.llm import get_llm
 from pptx import Presentation
 from pptx.util import Inches
 from pptx.chart.data import ChartData
@@ -11,10 +11,7 @@ import state
 
 # ---------------- LLM SETUP ---------------- #
 
-llm = ChatOllama(
-    model="llama3.1:8b",
-    temperature=0.1
-)
+llm = get_llm(temperature=0.1)
 
 prompt = """
 You are an information extraction system.

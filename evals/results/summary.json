@@ -1,0 +1,35 @@
+{
+  "config": "29 QMSum questions over 10 meetings \u00b7 top-3 chunks \u00b7 answer LLM: groq \u00b7 embeddings: hf \u00b7 judge: llama3.1:8b (Ollama) \u00b7 \u2013 = not judged",
+  "modes": {
+    "vector": {
+      "n": 29,
+      "hit@3": 0.793,
+      "mrr": 0.684,
+      "evidence_recall": 0.332,
+      "faithfulness": 0.585,
+      "answer_relevancy": 0.64,
+      "contextual_relevancy": 0.333,
+      "p50_retrieval_ms": 23
+    },
+    "hybrid": {
+      "n": 29,
+      "hit@3": 0.793,
+      "mrr": 0.69,
+      "evidence_recall": 0.398,
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "contextual_relevancy": null,
+      "p50_retrieval_ms": 19
+    },
+    "hybrid_rerank": {
+      "n": 29,
+      "hit@3": 0.828,
+      "mrr": 0.776,
+      "evidence_recall": 0.461,
+      "faithfulness": 0.603,
+      "answer_relevancy": 0.639,
+      "contextual_relevancy": 0.346,
+      "p50_retrieval_ms": 317
+    }
+  }
+}

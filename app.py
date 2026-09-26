@@ -1,7 +1,9 @@
+import os
+
 import streamlit as st
 import requests
 
-API_BASE = "http://127.0.0.1:8000"
+API_BASE = os.getenv("API_BASE", "http://127.0.0.1:8000")
 
 st.set_page_config(
     page_title="Meeting Intelligence",
@@ -123,8 +125,9 @@ if st.session_state.answer:
 
 # Show audio
 if st.session_state.audio_file:
-    audio_url = f"{API_BASE}/audio/{st.session_state.audio_file}"
-    st.audio(audio_url)
+    # Fetch server-side: in a deployed container the browser can't reach API_BASE.
+    audio = requests.get(f"{API_BASE}/audio/{st.session_state.audio_file}")
+    st.audio(audio.content, format="audio/mpeg")
 
 st.divider()
 
