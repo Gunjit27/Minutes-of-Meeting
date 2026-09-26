@@ -29,6 +29,9 @@ import time
 from pathlib import Path
 
 os.environ.setdefault("DEEPEVAL_TELEMETRY_OPT_OUT", "YES")
+# A local judge on a laptop CPU can take minutes per call; DeepEval's default
+# per-call timeout fails those. Failed scores are retried on the next run anyway.
+os.environ.setdefault("DEEPEVAL_DISABLE_TIMEOUTS", "YES")
 
 from deepeval.metrics import (  # noqa: E402
     AnswerRelevancyMetric,
