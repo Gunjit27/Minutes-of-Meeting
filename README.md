@@ -1,221 +1,98 @@
-# 🧠 Debrief: Meeting Intelligence System
+# Debrief
 
-An end-to-end AI-powered system that converts meeting audio into actionable insights — including transcripts, Q&A, structured minutes (MoM), and presentation-ready slides.
+Debrief takes a meeting recording and gives you a transcript you can ask questions about, plus minutes of meeting (MoM) and a slide deck.
 
----
+Under the hood it's Whisper for transcription and a RAG pipeline for Q&A. Retrieval uses BM25 and vector search together, then a cross-encoder reranks the results. I evaluated retrieval on meetings from the QMSum benchmark. Reranking took MRR from 0.68 to 0.78 and evidence recall from 0.33 to 0.46 (details below).
 
-## 🚀 Overview
+## Features
 
-This project is designed to automate the entire meeting workflow:
+- Transcribe `.mp3`, `.wav` or `.m4a` audio with faster-whisper, then clean up the transcript with an LLM
+- Ask questions about the meeting and get answers grounded in the transcript
+- Generate minutes of meeting: summary, decisions, action items, next steps
+- Export a PowerPoint deck
+- Optional spoken answers with Edge-TTS
 
-* Convert raw audio → structured knowledge
-* Enable querying meeting content using LLMs
-* Generate summaries and action items
-* Export outputs into usable formats (MoM, PPT)
+## How it works
 
-Unlike basic transcription tools, this system builds a **retrieval-based intelligence layer on top of meeting data**.
-
----
-
-## ✨ Features
-
-* 🎧 **Audio Transcription**
-
-  * Uses Whisper to convert speech → text
-
-* 🧠 **RAG-based Q&A**
-
-  * Ask questions about meeting content
-  * Hybrid retrieval: BM25 keyword search + vector search, merged with reciprocal rank fusion
-  * Cross-encoder reranking of the merged candidates
-  * Evaluated with DeepEval (see [Evaluation](#-evaluation))
-
-* 📝 **Minutes of Meeting (MoM)**
-
-  * Automatically extracts:
-
-    * Key discussion points
-    * Decisions
-    * Action items
-
-* 📊 **PPT Generation**
-
-  * Converts insights into presentation-ready slides
-
-* 🔊 **Text-to-Speech (Optional)**
-
-  * Converts answers into audio responses
-
----
-
-## 🏗️ Architecture
-
-```text
-Audio Input
-   ↓
-Whisper Transcription
-   ↓
-Text Processing
-   ↓
-Chunking + Embeddings
-   ↓
-Hybrid retrieval: BM25 + ChromaDB vectors (RRF)
-   ↓
-Cross-encoder reranker (top 3)
-   ↓
-LLM (Groq or local Ollama)
-   ↓
-Outputs:
-  - Q&A
-  - MoM
-  - PPT
+```mermaid
+flowchart LR
+    A[Audio] --> B[Whisper] --> C[Transcript clean-up] --> D[Chunks]
+    D --> E[(Chroma)]
+    D --> F[(BM25)]
+    Q[Question] --> E & F --> G[RRF merge] --> H[Cross-encoder rerank] --> I[LLM answer]
 ```
 
----
+The transcript is split into 800-character chunks and indexed twice: embeddings in Chroma, and a BM25 keyword index. For a question, both return their top 10 chunks. Those get merged with reciprocal rank fusion, a cross-encoder re-scores the merged list, and the top 3 go to the LLM.
 
-## 🛠️ Tech Stack
+I added BM25 because meetings are full of names, numbers and product terms that embeddings don't match well. The reranker is there because it reads the question and chunk together, so it ranks better than vector similarity on its own.
 
-* **Frontend:** Streamlit
-* **Backend:** FastAPI
-* **Speech-to-Text:** Whisper
-* **LLM:** gpt-oss-20b on Groq, or Llama 3.1 8B on local Ollama (`LLM_PROVIDER`)
-* **Embeddings:** bge-small (sentence-transformers) or nomic-embed-text on Ollama (`EMBED_PROVIDER`)
-* **Retrieval:** ChromaDB + BM25 (rank-bm25), ms-marco-MiniLM cross-encoder reranker
-* **Evaluation:** DeepEval (LLM-as-judge), plus judge-free retrieval metrics against QMSum's human-marked evidence
-* **TTS:** Edge-TTS
-* **Dependency Management:** uv (pyproject.toml)
+The frontend is Streamlit and the backend is FastAPI. The LLM can be Groq or a local Ollama model, set in `.env`.
 
----
+## Evaluation
 
-## 📂 Project Structure
+I used 29 questions from 10 meetings in [QMSum](https://github.com/Yale-LILY/QMSum). QMSum has real product-design meetings with human-written questions and answers, and it marks which parts of the transcript each answer comes from. That makes it possible to check whether retrieval found the right part of the meeting, without needing an LLM to grade it.
 
-```text
-.
-├── app.py                # Streamlit frontend
-├── main.py              # FastAPI backend
-├── state.py             # Shared state
+| Retrieval | hit@3 | MRR | Evidence recall | Latency (p50) |
+|---|---|---|---|---|
+| Vector only (original) | 0.79 | 0.68 | 0.33 | 23 ms |
+| BM25 + vector | 0.79 | 0.69 | 0.40 | 19 ms |
+| BM25 + vector + rerank | 0.83 | 0.78 | 0.46 | 317 ms |
 
-├── logic/
-│   ├── api/             # API endpoints
-│   ├── transcription/   # Audio → text
-│   ├── rag/             # Retrieval + Q&A
-│   ├── mom/             # MoM generation
-│   └── create_ppt/      # PPT generation
+- hit@3: whether any of the top 3 chunks contains the answer's evidence
+- MRR: how high the first relevant chunk ranks
+- Evidence recall: how much of the evidence the top 3 chunks cover
+
+Adding BM25 mostly helped coverage. The reranker helped both ranking and coverage, at the cost of about 300 ms per question on a laptop CPU.
+
+The eval also runs DeepEval (faithfulness, answer relevancy, contextual relevancy) with a configurable judge model. The full per-question output is in `evals/results/`.
+
+To run it:
+
+```bash
+uv run python -m evals.run --no-judge                  # retrieval metrics only
+uv run python -m evals.run --judge ollama:llama3.1:8b  # with DeepEval
 ```
 
----
+Results are saved after every question, so the run can be stopped and resumed.
 
-## ⚙️ Setup Instructions
+Things I want to try next: retrieving more chunks for summary-style questions, and smaller chunks that pull in their neighbours.
 
-### 1. Clone the repository
+## Running it
+
+You need Python 3.14 and [uv](https://docs.astral.sh/uv/).
 
 ```bash
 git clone https://github.com/Gunjit27/Minutes-of-Meeting.git
 cd Minutes-of-Meeting
-```
-
----
-
-### 2. Install dependencies (Recommended: uv)
-
-```bash
-pip install uv
 uv sync
+cp .env.example .env    # add your GROQ_API_KEY
 ```
 
----
-
-### 3. Configure
+Then start the backend and frontend in separate terminals:
 
 ```bash
-cp .env.example .env   # then set GROQ_API_KEY (free key: https://console.groq.com/keys)
+uv run uvicorn main:app --reload
+uv run streamlit run app.py
 ```
 
-To run fully local instead, set `LLM_PROVIDER=ollama` and `EMBED_PROVIDER=ollama`, and pull `llama3.1:8b` and `nomic-embed-text` in Ollama.
+To run everything locally instead, set `LLM_PROVIDER=ollama` and `EMBED_PROVIDER=ollama` in `.env`, and pull `llama3.1:8b` and `nomic-embed-text` in Ollama. The other options, like model names and retrieval mode, are listed in `.env.example`.
 
----
+## Project layout
 
-### 4. Run Backend
-
-```bash
-uvicorn main:app --reload
+```text
+app.py              Streamlit frontend
+main.py             FastAPI app
+logic/
+  llm.py            picks Groq or Ollama
+  transcription/    Whisper and transcript clean-up
+  rag/              chunking, retrieval, reranking, answers
+  mom/              minutes of meeting
+  create_ppt/       slides
+evals/              QMSum dataset, eval runner, results
 ```
 
----
+## Limitations
 
-### 5. Run Frontend
+The app keeps state in memory, so it handles one meeting at a time. There's no hosted demo yet.
 
-```bash
-streamlit run app.py
-```
-
----
-
-## 🧪 How It Works
-
-1. Upload meeting audio
-2. Transcribe audio using Whisper
-3. Store embeddings in vector database
-4. Query using RAG pipeline
-5. Generate:
-
-   * Answers
-   * Meeting summary (MoM)
-   * PPT slides
-
----
-
-## 📏 Evaluation
-
-The RAG pipeline is evaluated on **29 questions over 10 real meetings** from [QMSum](https://github.com/Yale-LILY/QMSum) (AMI product-design meetings, 10k to 40k characters each). QMSum's questions and answers are written by people, and each answer is tied to the transcript turns that support it, so retrieval can be scored without an LLM. `evals/build_qmsum.py` builds `evals/data/` from the QMSum repo.
-
-Each question is run through all three retrieval modes, answered with the app's own prompt and LLM, and scored:
-
-* **Retrieval, no LLM:** hit@3 (a top-3 chunk overlaps the evidence), MRR, and evidence recall (the share of the evidence the top 3 chunks cover)
-* **DeepEval, with an LLM judge (gpt-oss-120b on Groq by default):** faithfulness, answer relevancy, contextual relevancy. Add `--metrics all` for contextual precision and recall.
-
-```bash
-uv run python -m evals.run --no-judge   # retrieval metrics only, no API calls
-uv run python -m evals.run              # plus DeepEval, for the vector and hybrid_rerank modes
-```
-
-Results go to `evals/results/`: per-question rows with judge reasons in `<mode>.jsonl`, and the table below in `summary.md`. If the run hits a rate limit, it resumes where it stopped. `--judge gemini:gemini-2.5-flash` or `--judge ollama:llama3.1:8b` switches the judge.
-
-### Results
-
-Retrieval over 29 QMSum questions (10 meetings, 800-character chunks, top 3):
-
-| Retrieval | hit@3 | MRR | Evidence recall | p50 retrieval |
-|---|---|---|---|---|
-| Vector only (MMR, original) | 0.79 | 0.68 | 0.33 | 23 ms |
-| Hybrid (BM25 + vector, RRF) | 0.79 | 0.69 | 0.40 | 19 ms |
-| **Hybrid + cross-encoder rerank** | **0.83** | **0.78** | **0.46** | 317 ms |
-
-Reranking puts the right evidence first more often (MRR +15%), and the top 3 chunks cover 39% more of the evidence. The cost is about 300 ms more per query on a laptop CPU. Full per-question output is in `evals/results/`.
-
-Answer quality with DeepEval. Answers come from gpt-oss-20b on Groq, and the judge is Llama 3.1 8B on local Ollama:
-
-| Retrieval | Faithfulness | Answer relevancy | Contextual relevancy |
-|---|---|---|---|
-| Vector only (original) | 0.58 | 0.64 | 0.33 |
-| Hybrid + cross-encoder rerank | 0.60 | 0.64 | 0.35 |
-
-**What this shows.** Reranking clearly improves retrieval, but the answer scores barely move. A 0.02 change on 29 questions graded by an 8B judge is within noise. Two likely reasons:
-
-* Most QMSum questions ask for a summary of a whole discussion ("What did the group discuss about X?"). Three 800-character chunks of spoken dialogue often don't hold the full evidence, since evidence recall is only 0.46 even after reranking. The answer step is now the bottleneck, not ranking.
-* Contextual relevancy is low for both modes. Meeting speech is full of filler, so most statements in a retrieved chunk aren't about the question.
-
-**Next experiments:** retrieve 5 to 6 chunks for summary-style questions, try smaller chunks with neighbour expansion, and re-judge with a stronger model. The eval makes each of these a one-command comparison.
-
----
-
-## 💡 Use Cases
-
-* Team meetings
-* Client discussions
-* Interview analysis
-* Lecture summarization
-* Knowledge extraction from recordings
-
----
-
+Eval data is from QMSum (MIT license), which is built on the AMI Meeting Corpus.
