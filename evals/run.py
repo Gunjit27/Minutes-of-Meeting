@@ -117,6 +117,10 @@ def answer(row: dict) -> None:
         row["answer_s"] = round(time.perf_counter() - start, 2)
 
 
+class DailyLimitReached(Exception):
+    """The provider's daily token quota is spent; stop instead of recording errors."""
+
+
 def judge_case(row: dict, case: dict, metrics: list[str], judge) -> None:
     test_case = LLMTestCase(
         input=case["question"],
@@ -131,7 +135,10 @@ def judge_case(row: dict, case: dict, metrics: list[str], judge) -> None:
         try:
             metric.measure(test_case)
             row[name], row[f"{name}_reason"] = metric.score, metric.reason
-        except Exception as e:  # one bad judge response shouldn't sink the run; it's retried next time
+        except Exception as e:
+            if "tokens per day" in str(e):
+                raise DailyLimitReached(str(e)) from e
+            # one bad judge response shouldn't sink the run; it's retried next time
             row[name], row[f"{name}_reason"] = None, f"error: {e}"
 
 
@@ -146,7 +153,12 @@ def run_mode(mode: str, cases: list[dict], meetings: dict, metrics: list[str], j
         row = rows.get(case["id"]) or retrieve_case(case, meetings[case["meeting"]], mode)
         if judge:
             answer(row)
-            judge_case(row, case, metrics, judge)
+            try:
+                judge_case(row, case, metrics, judge)
+            except DailyLimitReached:
+                rows[case["id"]] = row
+                out.write_text("".join(json.dumps(r) + "\n" for r in rows.values()), encoding="utf-8")
+                raise SystemExit(f"\nDaily token limit reached at {case['id']}. Progress is saved; run the same command again later.")
         rows[case["id"]] = row
         out.write_text("".join(json.dumps(r) + "\n" for r in rows.values()), encoding="utf-8")
         scores = " ".join(f"{k}={row.get(k)}" for k in ["hit@3", *metrics] if k in row)

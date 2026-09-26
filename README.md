@@ -183,7 +183,17 @@ Results go to `evals/results/`: per-question rows with judge reasons in `<mode>.
 
 ### Results
 
-_Pending the first full run._
+Retrieval over 29 QMSum questions (10 meetings, 800-character chunks, top 3):
+
+| Retrieval | hit@3 | MRR | Evidence recall | p50 retrieval |
+|---|---|---|---|---|
+| Vector only (MMR, original) | 0.79 | 0.68 | 0.33 | 23 ms |
+| Hybrid (BM25 + vector, RRF) | 0.79 | 0.69 | 0.40 | 19 ms |
+| **Hybrid + cross-encoder rerank** | **0.83** | **0.78** | **0.46** | 317 ms |
+
+Reranking puts the right evidence first more often (MRR +15%), and the top 3 chunks cover 39% more of the evidence. The cost is about 300 ms more per query on a laptop CPU. Full per-question output is in `evals/results/`.
+
+DeepEval scores (faithfulness, answer relevancy, contextual relevancy): _in progress, limited by Groq's free-tier daily token quota._
 
 ---
 
