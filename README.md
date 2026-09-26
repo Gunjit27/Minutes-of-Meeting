@@ -46,7 +46,7 @@ The eval runs on **29 questions over 10 real meetings** from QMSum, which are AM
 Each question is answered with the app's own prompt and model, once per retrieval mode, and scored two ways:
 
 - **Retrieval, no LLM involved:** hit@3 (whether a top-3 chunk overlaps the evidence), MRR, and evidence recall (the share of the evidence text the top 3 chunks cover).
-- **Answer quality, with DeepEval:** faithfulness, answer relevancy and contextual relevancy, graded by an LLM judge.
+- **Answer quality, with DeepEval:** faithfulness, answer relevancy and contextual relevancy, graded by a pluggable LLM judge.
 
 ### Results
 
@@ -56,20 +56,14 @@ Each question is answered with the app's own prompt and model, once per retrieva
 | Hybrid (BM25 + vector, RRF) | 0.79 | 0.69 | 0.40 | 19 ms |
 | **Hybrid + cross-encoder rerank** | **0.83** | **0.78** | **0.46** | 317 ms |
 
-| Retrieval mode | Faithfulness | Answer relevancy | Contextual relevancy |
-|---|---|---|---|
-| Vector only (original) | 0.58 | 0.64 | 0.33 |
-| Hybrid + cross-encoder rerank | 0.60 | 0.64 | 0.35 |
-
-For these runs, answers came from gpt-oss-20b on Groq and the judge was Llama 3.1 8B on local Ollama. Retrieval latency was measured on a laptop CPU. Per-question output, including the judge's reasons, is in [`evals/results/`](evals/results/).
+Retrieval latency was measured on a laptop CPU. Per-question output, including retrieved chunks and generated answers, is in [`evals/results/`](evals/results/).
 
 ### What the numbers say
 
 - **Reranking fixes ranking.** The right evidence lands first more often (MRR up 15%), and the top 3 chunks cover 39% more of it, for about 300 ms more per query.
-- **Answer quality barely moved.** A 0.02 change on 29 questions graded by an 8B judge is within noise. Most QMSum questions ask for a summary of a whole discussion, and three 800-character chunks of spoken dialogue rarely hold all of it: evidence recall is still only 0.46. The bottleneck is now how much context reaches the answer, not how it's ranked.
-- **Contextual relevancy is low in both modes.** Meeting speech is full of filler, so most sentences in a retrieved chunk aren't about the question.
+- **BM25 matters for meetings.** Hybrid search alone lifts evidence recall from 0.33 to 0.40, likely because meetings are full of exact names, numbers and product terms that embeddings blur together.
 
-**Next experiments:** retrieve 5 to 6 chunks for summary-style questions, use smaller chunks with neighbour expansion, and re-judge with a stronger model. Each one is a single-command comparison against these baselines.
+**Next experiments:** retrieve 5 to 6 chunks for summary-style questions, and use smaller chunks with neighbour expansion. Each one is a single-command comparison against these baselines.
 
 ### Reproduce
 
@@ -159,7 +153,6 @@ Interactive docs are at `http://127.0.0.1:8000/docs` while the backend runs.
 ## Limitations
 
 - State lives in memory, so the app holds one meeting at a time for a single user.
-- The DeepEval scores come from an 8B judge, which is noisier than a frontier model. The retrieval metrics don't depend on any judge.
 - There's no hosted demo yet.
 
 ## Acknowledgements
