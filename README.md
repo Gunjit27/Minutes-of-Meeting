@@ -81,7 +81,7 @@ Outputs:
 * **LLM:** gpt-oss-20b on Groq, or Llama 3.1 8B on local Ollama (`LLM_PROVIDER`)
 * **Embeddings:** bge-small (sentence-transformers) or nomic-embed-text on Ollama (`EMBED_PROVIDER`)
 * **Retrieval:** ChromaDB + BM25 (rank-bm25), ms-marco-MiniLM cross-encoder reranker
-* **Evaluation:** DeepEval with a gpt-oss-120b judge on Groq
+* **Evaluation:** DeepEval (LLM-as-judge), plus judge-free retrieval metrics against QMSum's human-marked evidence
 * **TTS:** Edge-TTS
 * **Dependency Management:** uv (pyproject.toml)
 
@@ -193,7 +193,19 @@ Retrieval over 29 QMSum questions (10 meetings, 800-character chunks, top 3):
 
 Reranking puts the right evidence first more often (MRR +15%), and the top 3 chunks cover 39% more of the evidence. The cost is about 300 ms more per query on a laptop CPU. Full per-question output is in `evals/results/`.
 
-DeepEval scores (faithfulness, answer relevancy, contextual relevancy): _in progress, limited by Groq's free-tier daily token quota._
+Answer quality with DeepEval. Answers come from gpt-oss-20b on Groq, and the judge is Llama 3.1 8B on local Ollama:
+
+| Retrieval | Faithfulness | Answer relevancy | Contextual relevancy |
+|---|---|---|---|
+| Vector only (original) | 0.58 | 0.64 | 0.33 |
+| Hybrid + cross-encoder rerank | 0.60 | 0.64 | 0.35 |
+
+**What this shows.** Reranking clearly improves retrieval, but the answer scores barely move. A 0.02 change on 29 questions graded by an 8B judge is within noise. Two likely reasons:
+
+* Most QMSum questions ask for a summary of a whole discussion ("What did the group discuss about X?"). Three 800-character chunks of spoken dialogue often don't hold the full evidence, since evidence recall is only 0.46 even after reranking. The answer step is now the bottleneck, not ranking.
+* Contextual relevancy is low for both modes. Meeting speech is full of filler, so most statements in a retrieved chunk aren't about the question.
+
+**Next experiments:** retrieve 5 to 6 chunks for summary-style questions, try smaller chunks with neighbour expansion, and re-judge with a stronger model. The eval makes each of these a one-command comparison.
 
 ---
 
