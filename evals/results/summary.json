@@ -1,5 +1,5 @@
 {
-  "config": "29 QMSum questions over 10 meetings \u00b7 top-3 chunks \u00b7 answer LLM: groq \u00b7 embeddings: hf \u00b7 judge: groq:openai/gpt-oss-120b \u00b7 \u2013 = not judged",
+  "config": "29 QMSum questions over 10 meetings \u00b7 top-3 chunks \u00b7 answer LLM: groq \u00b7 embeddings: hf \u00b7 judge: llama3.1:8b (Ollama) \u00b7 \u2013 = not judged",
   "modes": {
     "vector": {
       "n": 29,
