@@ -78,10 +78,10 @@ Outputs:
 * **Frontend:** Streamlit
 * **Backend:** FastAPI
 * **Speech-to-Text:** Whisper
-* **LLM:** Llama 3.1 8B, on Groq or local Ollama (`LLM_PROVIDER`)
+* **LLM:** gpt-oss-20b on Groq, or Llama 3.1 8B on local Ollama (`LLM_PROVIDER`)
 * **Embeddings:** bge-small (sentence-transformers) or nomic-embed-text on Ollama (`EMBED_PROVIDER`)
 * **Retrieval:** ChromaDB + BM25 (rank-bm25), ms-marco-MiniLM cross-encoder reranker
-* **Evaluation:** DeepEval with a Llama 3.3 70B judge on Groq
+* **Evaluation:** DeepEval with a gpt-oss-120b judge on Groq
 * **TTS:** Edge-TTS
 * **Dependency Management:** uv (pyproject.toml)
 
@@ -172,7 +172,7 @@ The RAG pipeline is evaluated on **29 questions over 10 real meetings** from [QM
 Each question is run through all three retrieval modes, answered with the app's own prompt and LLM, and scored:
 
 * **Retrieval, no LLM:** hit@3 (a top-3 chunk overlaps the evidence), MRR, and evidence recall (the share of the evidence the top 3 chunks cover)
-* **DeepEval, with an LLM judge (Llama 3.3 70B on Groq by default):** faithfulness, answer relevancy, contextual relevancy. Add `--metrics all` for contextual precision and recall.
+* **DeepEval, with an LLM judge (gpt-oss-120b on Groq by default):** faithfulness, answer relevancy, contextual relevancy. Add `--metrics all` for contextual precision and recall.
 
 ```bash
 uv run python -m evals.run --no-judge   # retrieval metrics only, no API calls

@@ -1,11 +1,11 @@
 """DeepEval judge models, picked with --judge provider:model.
 
-    groq:llama-3.3-70b-versatile   (default, needs GROQ_API_KEY)
+    groq:openai/gpt-oss-120b       (default, needs GROQ_API_KEY)
     gemini:gemini-2.5-flash        (needs GOOGLE_API_KEY)
     ollama:llama3.1:8b             (local, free, but a weak and lenient judge)
 
 DeepEval has no built-in Groq model, so GroqJudge wraps ChatGroq. The judge
-should be a bigger model than the one answering: an 8B model grading 8B
+should be a bigger model than the one answering: a small model grading small-model
 answers is too lenient to be worth reporting.
 """
 import os
@@ -13,7 +13,7 @@ import os
 from deepeval.models import DeepEvalBaseLLM
 from langchain_groq import ChatGroq
 
-DEFAULT_JUDGE = os.getenv("JUDGE_MODEL", "groq:llama-3.3-70b-versatile")
+DEFAULT_JUDGE = os.getenv("JUDGE_MODEL", "groq:openai/gpt-oss-120b")
 
 
 class GroqJudge(DeepEvalBaseLLM):
@@ -23,7 +23,9 @@ class GroqJudge(DeepEvalBaseLLM):
 
     def load_model(self):
         # Free-tier Groq rate limits are tight; retry with backoff instead of failing the run.
-        return ChatGroq(model=self.model_name, temperature=0, max_retries=8)
+        # gpt-oss models think before answering; "low" keeps grading cheap on the free-tier token quota.
+        effort = "low" if self.model_name.startswith("openai/gpt-oss") else None
+        return ChatGroq(model=self.model_name, temperature=0, max_retries=8, reasoning_effort=effort)
 
     def generate(self, prompt: str) -> str:
         return self.model.invoke(prompt).content

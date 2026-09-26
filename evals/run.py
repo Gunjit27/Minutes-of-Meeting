@@ -188,7 +188,7 @@ def main() -> None:
     parser.add_argument("--judge-modes", nargs="+", default=["vector", "hybrid_rerank"], choices=MODES)
     parser.add_argument("--no-judge", action="store_true", help="retrieval metrics only, no judge calls")
     parser.add_argument("--metrics", nargs="+", default=DEFAULT_METRICS, choices=[*ALL_METRICS, "all"])
-    parser.add_argument("--judge", default=DEFAULT_JUDGE, help="provider:model, e.g. groq:llama-3.3-70b-versatile")
+    parser.add_argument("--judge", default=DEFAULT_JUDGE, help="provider:model, e.g. groq:openai/gpt-oss-120b")
     parser.add_argument("--limit", type=int, help="only the first N questions")
     args = parser.parse_args()
 
