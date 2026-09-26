@@ -1,10 +1,8 @@
 import state
-from langchain_ollama import ChatOllama
+from logic.rag.retrieval import retrieve
+from logic.llm import get_llm
 
-llm = ChatOllama(
-    model='llama3.1:8b',
-    temperature=0.2
-)
+llm = get_llm(temperature=0.2)
 
 prompt = """
 You are an assistant for answering questions based on the context provided.
@@ -27,20 +25,9 @@ def load_vectorstore():
 
 
 def query_vectorstore(query: str):
-    vectorstore = load_vectorstore()
+    results = retrieve(load_vectorstore(), query)
 
-    retriever = vectorstore.as_retriever(
-        search_type="mmr",
-        search_kwargs={
-            "k": 3,
-            "fetch_k": 10,
-            "lambda_mult": 0.5
-        }
-    )
-
-    results = retriever.invoke(query)
-
-    context = "\n\n".join([doc.page_content for doc in results])
+    context = "\n\n".join(results)
     return context
 
 

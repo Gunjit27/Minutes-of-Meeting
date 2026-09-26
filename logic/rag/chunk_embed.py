@@ -1,8 +1,7 @@
-from langchain_ollama import OllamaEmbeddings
-# from langchain_community.vectorstores import Chroma
-from langchain_chroma import Chroma
 import state
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+from logic.rag.retrieval import build_index
 
 
 def chunk_transcript(transcript: str):
@@ -16,16 +15,6 @@ def chunk_transcript(transcript: str):
 
 def embed_chunks():
     chunks = chunk_transcript(state.get_transcript())
-    embeddings = OllamaEmbeddings(model='nomic-embed-text')
-
-    vectorstore = Chroma(
-        persist_directory="./chroma_db",
-        embedding_function=embeddings
-    )
-
-    vectorstore.add_texts(chunks)
-    # vectorstore.persist()
-
-    state.set_vectorstore(vectorstore)
-
-    return vectorstore
+    index = build_index(chunks)
+    state.set_vectorstore(index)
+    return index

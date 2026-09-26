@@ -1,4 +1,4 @@
-# 🧠 Meeting Intelligence System
+# 🧠 Debrief: Meeting Intelligence System
 
 An end-to-end AI-powered system that converts meeting audio into actionable insights — including transcripts, Q&A, structured minutes (MoM), and presentation-ready slides.
 
@@ -26,7 +26,9 @@ Unlike basic transcription tools, this system builds a **retrieval-based intelli
 * 🧠 **RAG-based Q&A**
 
   * Ask questions about meeting content
-  * Context-aware answers using vector search
+  * Hybrid retrieval: BM25 keyword search + vector search, merged with reciprocal rank fusion
+  * Cross-encoder reranking of the merged candidates
+  * Evaluated with DeepEval (see [Evaluation](#-evaluation))
 
 * 📝 **Minutes of Meeting (MoM)**
 
@@ -57,9 +59,11 @@ Text Processing
    ↓
 Chunking + Embeddings
    ↓
-Vector Store (ChromaDB)
+Hybrid retrieval: BM25 + ChromaDB vectors (RRF)
    ↓
-LLM (Ollama)
+Cross-encoder reranker (top 3)
+   ↓
+LLM (Groq or local Ollama)
    ↓
 Outputs:
   - Q&A
@@ -74,8 +78,10 @@ Outputs:
 * **Frontend:** Streamlit
 * **Backend:** FastAPI
 * **Speech-to-Text:** Whisper
-* **LLM:** Ollama (LLaMA 3)
-* **Vector Store:** ChromaDB
+* **LLM:** Llama 3.1 8B, on Groq or local Ollama (`LLM_PROVIDER`)
+* **Embeddings:** bge-small (sentence-transformers) or nomic-embed-text on Ollama (`EMBED_PROVIDER`)
+* **Retrieval:** ChromaDB + BM25 (rank-bm25), ms-marco-MiniLM cross-encoder reranker
+* **Evaluation:** DeepEval with a Llama 3.3 70B judge on Groq
 * **TTS:** Edge-TTS
 * **Dependency Management:** uv (pyproject.toml)
 
@@ -119,7 +125,17 @@ uv sync
 
 ---
 
-### 3. Run Backend
+### 3. Configure
+
+```bash
+cp .env.example .env   # then set GROQ_API_KEY (free key: https://console.groq.com/keys)
+```
+
+To run fully local instead, set `LLM_PROVIDER=ollama` and `EMBED_PROVIDER=ollama`, and pull `llama3.1:8b` and `nomic-embed-text` in Ollama.
+
+---
+
+### 4. Run Backend
 
 ```bash
 uvicorn main:app --reload
@@ -127,7 +143,7 @@ uvicorn main:app --reload
 
 ---
 
-### 4. Run Frontend
+### 5. Run Frontend
 
 ```bash
 streamlit run app.py
@@ -146,6 +162,26 @@ streamlit run app.py
    * Answers
    * Meeting summary (MoM)
    * PPT slides
+
+---
+
+## 📏 Evaluation
+
+The RAG pipeline is evaluated on a fixed transcript of a sample earnings call (`evals/data/`), with a hand-checked question set in `evals/data/golden.json`. Every question is run through each retrieval mode, answered with the app's own prompt and LLM, and scored:
+
+* **Retrieval, no LLM:** hit@3 and MRR. Each question carries a verbatim evidence quote, and a hit means a top-3 chunk contains it.
+* **DeepEval, with a Llama 3.3 70B judge:** faithfulness, answer relevancy, contextual precision, contextual recall, contextual relevancy.
+
+```bash
+uv run python -m evals.transcribe EarningsCall.wav   # once, writes evals/data/
+uv run python -m evals.run                           # all modes; --limit 5 for a quick run
+```
+
+Results are written to `evals/results/`: per-question rows with judge reasons in `<mode>.jsonl`, and the table below in `summary.md`. The run resumes where it stopped if Groq's free-tier limit cuts it off.
+
+### Results
+
+_Pending the first full run._
 
 ---
 

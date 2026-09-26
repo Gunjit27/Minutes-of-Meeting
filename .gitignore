@@ -1,2 +1,7 @@
 /.python-version
 /.venv
+.env
+__pycache__/
+chroma_db/
+temp_uploads/
+output_*.mp3

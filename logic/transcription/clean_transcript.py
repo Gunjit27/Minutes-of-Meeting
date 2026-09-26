@@ -1,10 +1,7 @@
-from langchain_ollama import ChatOllama
+from logic.llm import get_llm
 import state
 
-llm = ChatOllama(
-    model='llama3.1:8b',
-    temperature=0
-)
+llm = get_llm(temperature=0)
 
 prompt = """
     You are an expert in cleaning transcripts.
